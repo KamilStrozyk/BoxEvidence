@@ -1,0 +1,2 @@
+rootProject.name='Box Evidence'
+include ':app'

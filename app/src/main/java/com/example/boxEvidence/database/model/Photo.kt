@@ -1,4 +1,5 @@
 package com.example.boxEvidence.database.model
 
-class Photo {
-}
+import android.media.Image
+
+class Photo  (val Id: String, val EntityId: String, val Data: Image)

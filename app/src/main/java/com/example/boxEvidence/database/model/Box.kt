@@ -9,15 +9,15 @@ import androidx.room.Relation
 data class Box(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val Id: Int,
+    val id: Int,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "localizationid")
-    val LocalizationId: Int,
+    val localizationId: Int,
     @ColumnInfo(name = "comment")
-    val Comment: String,
+    val comment: String,
     @ColumnInfo(name = "code")
-    val Code: String,
+    val code: String,
     @ColumnInfo(name = "photoid")
-    val PhotoId: Int
+    val photoId: Int?
 )

@@ -8,6 +8,6 @@ import java.util.*
 data class Keyword (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val Id: Int,
+    val id: Int,
     @ColumnInfo(name = "name")
-    val Name: String)
+    val name: String)

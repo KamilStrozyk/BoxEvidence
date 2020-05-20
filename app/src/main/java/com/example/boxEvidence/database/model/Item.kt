@@ -8,14 +8,16 @@ import androidx.room.PrimaryKey
 data class Item(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val Id: Int,
+    val id: Int,
     @ColumnInfo(name = "name")
-    val Name: String,
+    val name: String,
     @ColumnInfo(name = "eancode")
-    val EANCode: String,
+    val eanCode: String?,
     @ColumnInfo(name = "categoryid")
-    val CategoryId: Int,
+    val categoryId: Int,
     @ColumnInfo(name = "comment")
-    val Comment: String
+    val comment: String
 )
+
+
 

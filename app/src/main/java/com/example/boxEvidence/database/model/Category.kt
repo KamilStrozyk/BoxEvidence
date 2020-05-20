@@ -1,13 +1,20 @@
 package com.example.boxEvidence.database.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "categories")
 data class Category (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val Id: Int,
+    val id: Int,
     @ColumnInfo(name = "name")
-    val Name: String)
+    val name: String)
+
+data class CategoryWithItems(
+    @Embedded val category: Category,
+    @Relation(
+        parentColumn = "userId",
+        entityColumn = "userCreatorId"
+    )
+    val items: List<Item>
+)

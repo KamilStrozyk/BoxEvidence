@@ -1,17 +1,18 @@
 package com.example.boxEvidence.database.model
 
-import android.media.Image
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Embedded
+import androidx.room.Relation
 
 @Entity(tableName = "photos")
 data class Photo(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val Id: Int,
-    @ColumnInfo(name = "entityid")
-    val EntityId: Int,
+    val id: Int,
+    @ColumnInfo(name = "itemid")
+    val itemId: Int?,
     @ColumnInfo(name = "entityid", typeAffinity = ColumnInfo.BLOB)
     val Data: ByteArray
 ) {
@@ -21,18 +22,34 @@ data class Photo(
 
         other as Photo
 
-        if (Id != other.Id) return false
-        if (EntityId != other.EntityId) return false
+        if (id != other.id) return false
+        if (itemId != other.itemId) return false
         if (!Data.contentEquals(other.Data)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = Id
-        result = 31 * result + EntityId
+        var result = id
         result = 31 * result + Data.contentHashCode()
         return result
     }
 }
 
+data class BoxWithPhoto(
+    @Embedded val box: Box,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "photoid"
+    )
+    val photo: Photo?
+)
+
+data class ItemWithPhoto(
+    @Embedded val item: Item,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "itemid"
+    )
+    val photos: List<Photo>
+)

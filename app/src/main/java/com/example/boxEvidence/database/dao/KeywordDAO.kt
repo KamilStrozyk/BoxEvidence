@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.example.boxEvidence.database.model.Keyword
 
 @Dao
-abstract class KeywordDAO : GenericDAO<Keyword>{
+abstract class KeywordDAO : GenericDAO<Keyword>() {
 
     @Query("SELECT * FROM keywords")
     abstract fun getAll(): Array<Keyword>

@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.example.boxEvidence.database.model.Photo
 
 @Dao
-abstract class PhotoDAO : GenericDAO<Photo>{
+abstract class PhotoDAO : GenericDAO<Photo>() {
 
     @Query("SELECT * FROM photos")
     abstract fun getAll(): Array<Photo>

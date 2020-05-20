@@ -2,25 +2,26 @@ package com.example.boxEvidence.database.dao
 
 import androidx.room.*
 
-interface GenericDAO<T> {
-    val tableName : String
+
+@Dao
+abstract class GenericDAO<T> {
 
     @Insert()
-    fun insert(vararg obj: T)
+    abstract fun add(obj: T)
 
     @Insert()
-    fun insert(vararg obj: List<T>)
+    abstract fun add(obj: List<T>)
 
     @Update()
-    fun update(vararg obj: T)
+    abstract fun updateElem(obj: T)
 
     @Update()
-    fun update(vararg obj: List<T>)
+    abstract fun updateElem(obj: List<T>)
 
     @Delete()
-    fun delete(vararg obj: T)
+    abstract fun remove(obj: T)
 
     @Delete()
-    fun delete(vararg obj: List<T>)
+    abstract fun remove(obj: List<T>)
 }
 

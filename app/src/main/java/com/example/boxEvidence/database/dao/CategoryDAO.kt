@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.example.boxEvidence.database.model.Category
 
 @Dao
-abstract class CategoryDAO : GenericDAO<Category>{
+abstract class CategoryDAO : GenericDAO<Category>() {
 
     @Query("SELECT * FROM categories")
     abstract fun getAll(): Array<Category>

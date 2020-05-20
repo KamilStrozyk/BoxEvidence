@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.example.boxEvidence.database.model.Location
 
 @Dao
-abstract class LocationDAO : GenericDAO<Location>{
+abstract class LocationDAO : GenericDAO<Location>() {
 
     @Query("SELECT * FROM locations")
     abstract fun getAll(): Array<Location>

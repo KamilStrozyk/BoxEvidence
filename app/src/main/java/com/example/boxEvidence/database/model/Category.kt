@@ -13,8 +13,8 @@ data class Category (
 data class CategoryWithItems(
     @Embedded val category: Category,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "userCreatorId"
+        parentColumn = "id",
+        entityColumn = "categoryid"
     )
     val items: List<Item>
 )

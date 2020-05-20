@@ -1,8 +1,6 @@
 package com.example.boxEvidence.database.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "locations")
 data class Location  (
@@ -11,3 +9,12 @@ data class Location  (
     val id: Int,
     @ColumnInfo(name = "name")
     val name: String)
+
+data class LocationWithBoxes(
+    @Embedded val location: Location,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "locationid"
+    )
+    val boxes: List<Box>
+)

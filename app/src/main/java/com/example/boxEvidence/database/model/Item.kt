@@ -1,8 +1,6 @@
 package com.example.boxEvidence.database.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "items")
 data class Item(
@@ -15,9 +13,12 @@ data class Item(
     val eanCode: String?,
     @ColumnInfo(name = "categoryid")
     val categoryId: Int,
+    @ColumnInfo(name = "boxid")
+    val boxId: Int?,
     @ColumnInfo(name = "comment")
     val comment: String
 )
+
 
 
 

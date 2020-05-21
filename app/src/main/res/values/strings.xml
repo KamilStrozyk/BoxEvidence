@@ -12,4 +12,6 @@
     <string name="title_activity_main">Box Evidence</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_table_view">BoxEvidence</string>
+    <string name="title_activity_table">BoxEvifence</string>
 </resources>

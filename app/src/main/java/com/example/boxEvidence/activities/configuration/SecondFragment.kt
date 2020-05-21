@@ -1,4 +1,4 @@
-package com.example.boxEvidence.activities
+package com.example.boxEvidence.activities.configuration
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -25,8 +25,12 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.button_second).setOnClickListener {
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+        view.findViewById<Button>(R.id.button_finish).setOnClickListener {
+            //                    val activity2Intent = Intent(
+//                        applicationContext,
+//                        TableActivity::class.java
+//                    )
+//                    startActivity(activity2Intent)
         }
     }
 }

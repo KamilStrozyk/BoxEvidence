@@ -13,15 +13,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        try {
+
 
             val db = AppDatabase(applicationContext)
+        try {
+            Thread {
+                //Do your database´s operations here
 
-            db.keywordDAO().add(Keyword(0, "something"))
-            Log.w("db", db.keywordDAO().getAll().size.toString())
+                db.keywordDAO().add(Keyword(2, "somerthing"))
+                Log.w("db", db.keywordDAO().getAll().size.toString())
+            }.start()
         } catch (e: Exception){
             Log.w("db",e.toString())
         }
     }
+
 }
 

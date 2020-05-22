@@ -85,8 +85,9 @@ class LocationView : ListFragment() {
                     .setPositiveButton("OK", null)
 
                 AlertDialog.Builder(this.context)
-                    .setMessage(id.toString())
-                 .setPositiveButton(
+                    .setMessage(item)
+                    .setPositiveButton("Boxes", null)
+                 .setNeutralButton(
                         "Remove"
                     ) { _, _ ->
                         try {
@@ -129,8 +130,13 @@ class LocationView : ListFragment() {
 
                         val db = this.context?.let { it1 -> AppDatabase(it1) }
                         if (db != null) {
-                            var id = db.locationDAO().getAll().map{ value -> value.id }.max() +1
-                            db.locationDAO().add(Location(id, locationName.toString()))
+                            var id = db.locationDAO().getAll().map{ value -> value.id }.max()
+                                ?.plus(1)
+                            id?.let { it1 -> Location(it1, locationName.toString()) }?.let { it2 ->
+                                db.locationDAO().add(
+                                    it2
+                                )
+                            }
                             adapter?.add(locationName)
                         } else
                             throw Exception()

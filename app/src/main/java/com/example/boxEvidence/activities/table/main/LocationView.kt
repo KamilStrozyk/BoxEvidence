@@ -13,6 +13,7 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import androidx.navigation.fragment.findNavController
+import androidx.room.Delete
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Location
@@ -53,6 +54,7 @@ class LocationView : ListFragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_location_view, container, false)
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val db = this.context?.let { AppDatabase(it) }
@@ -64,22 +66,41 @@ class LocationView : ListFragment() {
                     it,
                     R.layout.location_item,
                     R.id.location_name,
-                   it1
+                    it1
                 )
             }
         }
 
-        val list : ListView  = listView
+        val list: ListView = listView
         list.adapter = adapter
 
         list.setOnItemClickListener { parent, view, position, id ->
             locations = db?.locationDAO()?.getAll()
             val item = adapter?.getItem(position)
             val id = locations?.filter { value -> value.name.equals(item) }?.single()?.id
-            if(id != null){
+            if (id != null) {
+
+                val removeError = AlertDialog.Builder(this.context)
+                    .setMessage("Error, please try again.")
+                    .setPositiveButton("OK", null)
+
                 AlertDialog.Builder(this.context)
                     .setMessage(id.toString())
-                .setPositiveButton("OK", null).show()
+                 .setPositiveButton(
+                        "Remove"
+                    ) { _, _ ->
+                        try {
+                            val db = this.context?.let { it1 -> AppDatabase(it1) }
+                            if (db != null) {
+                                db.locationDAO().remove(Location(id, item.toString()))
+                                adapter?.remove(item)
+                            } else
+                                throw Exception()
+
+                        } catch (exception: Exception) {
+                            removeError.show()
+                        }
+                    }.setNegativeButton("Cancel", null).show()
             }
         }
         val fab: FloatingActionButton = this.fab
@@ -97,26 +118,26 @@ class LocationView : ListFragment() {
                 .setView(locationToSet)
                 .setPositiveButton(
                     "Add"
-                ) { dialog, whichButton ->
+                ) { _, _ ->
                     val locationName = locationToSet.text.toString()
                     val error = AlertDialog.Builder(this.context)
                         .setMessage("Invalid data in form, please try again.")
                         .setPositiveButton("OK", null)
 
-                        try {
-                            if(locationName == "") throw Exception()
+                    try {
+                        if (locationName == "") throw Exception()
 
-                                val db = this.context?.let { it1 -> AppDatabase(it1) }
-                                if (db != null) {
-                                    val id = db.locationDAO().getAll().size +1
-                                    db.locationDAO().add(Location(id, locationName.toString()))
-                                    adapter?.add(locationName)
-                                } else
-                                    throw Exception()
+                        val db = this.context?.let { it1 -> AppDatabase(it1) }
+                        if (db != null) {
+                            var id = db.locationDAO().getAll().map{ value -> value.id }.max() +1
+                            db.locationDAO().add(Location(id, locationName.toString()))
+                            adapter?.add(locationName)
+                        } else
+                            throw Exception()
 
-                        } catch (exception: Exception) {
-                            error.show()
-                        }
+                    } catch (exception: Exception) {
+                        error.show()
+                    }
                 }
                 .setNegativeButton(
                     "Cancel"
@@ -124,6 +145,7 @@ class LocationView : ListFragment() {
                 .show()
         }
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

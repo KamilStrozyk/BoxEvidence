@@ -10,9 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.TableActivity"
+            android:name=".activities.table.main.TableActivity"
             android:label="@string/title_activity_table"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activities.TableActivity"
+            android:label="@string/title_activity_table"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.table.TableView"
             android:label="@string/title_activity_table_view"

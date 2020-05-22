@@ -13,6 +13,7 @@ class AddLocation : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_location)
         setSupportActionBar(toolbar)
+        title = "Setup an app";
     }
 
 }

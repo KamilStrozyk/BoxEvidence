@@ -83,6 +83,9 @@ class LocationView : ListFragment() {
                 val removeError = AlertDialog.Builder(this.context)
                     .setMessage("Error, please try again.")
                     .setPositiveButton("OK", null)
+                val nullError = AlertDialog.Builder(this.context)
+                    .setMessage("Error, location is not empty.")
+                    .setPositiveButton("OK", null)
 
                 AlertDialog.Builder(this.context)
                     .setMessage(item)
@@ -93,8 +96,11 @@ class LocationView : ListFragment() {
                         try {
                             val db = this.context?.let { it1 -> AppDatabase(it1) }
                             if (db != null) {
+                                if(!db.boxDAO().getByLocationId(id).isEmpty())
+                                {
                                 db.locationDAO().remove(Location(id, item.toString()))
                                 adapter?.remove(item)
+                                }else nullError.show()
                             } else
                                 throw Exception()
 

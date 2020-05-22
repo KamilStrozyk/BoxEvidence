@@ -12,4 +12,7 @@ abstract class BoxDAO : GenericDAO<Box>() {
 
     @Query("SELECT * FROM boxes WHERE id = :entityId")
     abstract fun getById(entityId: Int) : Box
+
+    @Query("SELECT * FROM boxes WHERE locationid = :entityId")
+    abstract fun getByLocationId(entityId: Int) : Array<Box>
 }

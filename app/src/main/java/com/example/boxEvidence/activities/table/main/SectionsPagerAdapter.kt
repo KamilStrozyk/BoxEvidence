@@ -24,8 +24,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
         // Return a PlaceholderFragment (defined as a static inner class below).
         when (position) {
             0 -> return LocationView()
-            1 -> return PlaceholderFragment.newInstance(position + 1)
-            2 -> return PlaceholderFragment.newInstance(position + 1)
+            1 -> return ItemView()
         }
         return PlaceholderFragment.newInstance(position + 1)
     }
@@ -38,6 +37,6 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
 
     override fun getCount(): Int {
 
-        return 3
+        return 2
     }
 }

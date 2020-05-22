@@ -12,4 +12,7 @@ abstract class PhotoDAO : GenericDAO<Photo>() {
 
     @Query("SELECT * FROM photos WHERE id = :entityId")
     abstract fun getById(entityId: Int) : Photo
+
+    @Query("SELECT * FROM photos WHERE itemid = :entityId")
+    abstract fun getByItemId(entityId: Int) : List<Photo>
 }

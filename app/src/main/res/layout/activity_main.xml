@@ -28,8 +28,8 @@
 
     <TextView
         android:id="@+id/setupText"
-        android:layout_width="377dp"
-        android:layout_height="96dp"
+        android:layout_width="320dp"
+        android:layout_height="95dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="276dp"

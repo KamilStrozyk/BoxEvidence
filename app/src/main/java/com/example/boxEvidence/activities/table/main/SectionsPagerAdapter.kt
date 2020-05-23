@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 private val TAB_TITLES = arrayOf(
     "Locations",
-    "Boxes",
     "Items"
 )
 

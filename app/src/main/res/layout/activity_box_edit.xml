@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground2"
-    tools:context=".BoxEdit">
+    tools:context=".activities.table.main.box.BoxEdit">
 
 
     <EditText
@@ -44,7 +44,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="Add QR Code"
-        app:layout_constraintBottom_toTopOf="@+id/button_add"
+        app:layout_constraintBottom_toTopOf="@+id/box_add"
         app:layout_constraintEnd_toStartOf="@+id/box_photo"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="Add Photo"
-        app:layout_constraintBottom_toTopOf="@+id/button_add"
+        app:layout_constraintBottom_toTopOf="@+id/box_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/box_qr"
@@ -92,7 +92,7 @@
         app:layout_constraintTop_toBottomOf="@+id/box_comment" />
 
     <Button
-        android:id="@+id/button_add"
+        android:id="@+id/box_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

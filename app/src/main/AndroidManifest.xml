@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BoxEdit"></activity>
+        <activity android:name=".activities.table.main.box.Box_details"></activity>
+        <activity android:name=".activities.table.main.box.BoxEdit" />
         <activity android:name=".activities.BoxLocationActivity" />
         <activity
             android:name=".activities.table.main.TableActivity"

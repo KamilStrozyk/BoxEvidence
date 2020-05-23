@@ -10,6 +10,12 @@ abstract class LocationDAO : GenericDAO<Location>() {
     @Query("SELECT * FROM locations")
     abstract fun getAll(): Array<Location>
 
+    @Query("SELECT name FROM locations")
+    abstract fun getAllNames(): Array<String>
+
     @Query("SELECT * FROM locations WHERE id = :entityId")
     abstract fun getById(entityId: Int) : Location
+
+    @Query("SELECT id FROM locations WHERE name = :name")
+    abstract fun getIdByName(name: String) : Int
 }

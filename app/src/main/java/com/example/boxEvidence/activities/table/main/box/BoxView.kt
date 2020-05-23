@@ -154,7 +154,11 @@ class BoxView : ListFragment() {
         }
         val fab: FloatingActionButton = this.fab
         fab.setOnClickListener {
-
+            val activity2Intent = Intent(
+                this.context,
+                BoxEdit::class.java
+            )
+            startActivity(activity2Intent)
         }
     }
 

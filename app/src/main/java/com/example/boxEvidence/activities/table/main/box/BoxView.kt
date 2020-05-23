@@ -1,9 +1,10 @@
-package com.example.boxEvidence.activities.table.main
+package com.example.boxEvidence.activities.table.main.box
 
-import android.R.attr.name
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
+import com.example.boxEvidence.activities.BoxLocationActivity
+import com.example.boxEvidence.activities.table.main.ItemAdapter
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.viewmodel.ItemViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -24,8 +27,8 @@ import kotlinx.android.synthetic.main.activity_table.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM1 = "locationId"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -34,32 +37,32 @@ private const val ARG_PARAM2 = "param2"
  */
 class BoxView : ListFragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    var locationId : Int = -1
+    public var locationId: Int = 0
+
+
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            locationId = it.getInt(ARG_PARAM1)
+
         }
 
     }
 
-    fun newInstance(id: Int): BoxView? {
-        val bundle = Bundle()
-        bundle.putString("locationId", id.toString())
-        val fragment = BoxView()
-        fragment.setArguments(bundle)
-        return fragment
-    }
-
-    private fun readBundle(bundle: Bundle?) {
-        if (bundle != null) {
-            locationId = bundle.getString("locationId")?.toInt()!!
-        }
-    }
+//    fun newInstance(id: Int): BoxView? {
+//        val bundle = Bundle()
+//        bundle.putString("locationId", id.toString())
+//        val fragment = BoxView()
+//        fragment.setArguments(bundle)
+//        return fragment
+//    }
+//
+//    private fun readBundle(bundle: Bundle?) {
+//        if (bundle != null) {
+//            locationId = bundle.getString("locationId")?.toInt()!!
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,7 +74,7 @@ class BoxView : ListFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        readBundle(arguments);
+//        readBundle(arguments);
         val db = this.context?.let { AppDatabase(it) }
 
         var boxes = db?.boxDAO()?.getByLocationId(locationId)
@@ -114,7 +117,15 @@ class BoxView : ListFragment() {
 
 
                 AlertDialog.Builder(this.context)
-                    .setMessage(item).setPositiveButton("Details", null)
+                    .setMessage(item).setPositiveButton("Details") { _: DialogInterface, _: Int ->
+
+                        val activity2Intent = Intent(
+                            this.context,
+                            BoxLocationActivity::class.java
+                        )
+                        activity2Intent.putExtra("LOCATION_ID", id.toString());
+                        startActivity(activity2Intent)
+                    }
                     .setNeutralButton(
                         "Remove"
                     ) { _, _ ->
@@ -130,7 +141,15 @@ class BoxView : ListFragment() {
                         } catch (exception: Exception) {
                             removeError.show()
                         }
-                    }.setNegativeButton("Cancel", null).show()
+                    }.setNegativeButton("Items") { _: DialogInterface, _: Int ->
+
+                        val activity2Intent = Intent(
+                            this.context,
+                            BoxLocationActivity::class.java
+                        )
+                        activity2Intent.putExtra("LOCATION_ID", id.toString());
+                        startActivity(activity2Intent)
+                    }.show()
             }
         }
         val fab: FloatingActionButton = this.fab
@@ -150,11 +169,11 @@ class BoxView : ListFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LocationView().apply {
+        fun newInstance(param1: Int) =
+            BoxView().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putInt(ARG_PARAM1, param1)
+
                 }
             }
     }

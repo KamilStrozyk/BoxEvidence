@@ -2,6 +2,8 @@ package com.example.boxEvidence.activities.table.main
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import androidx.fragment.app.ListFragment
 import androidx.navigation.fragment.findNavController
 import androidx.room.Delete
 import com.example.boxEvidence.R
+import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Location
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,7 +77,7 @@ class LocationView : ListFragment() {
         val list: ListView = listView
         list.adapter = adapter
 
-        list.setOnItemClickListener { parent, view, position, id ->
+        list.setOnItemClickListener { _, _, position, _ ->
             locations = db?.locationDAO()?.getAll()
             val item = adapter?.getItem(position)
             val id = locations?.filter { value -> value.name.equals(item) }?.single()?.id
@@ -89,8 +92,16 @@ class LocationView : ListFragment() {
 
                 AlertDialog.Builder(this.context)
                     .setMessage(item)
-                    .setPositiveButton("Boxes", null)
-                 .setNeutralButton(
+                    .setPositiveButton("Boxes") { _: DialogInterface, _: Int ->
+
+                        val activity2Intent = Intent(
+                            this.context,
+                            BoxLocationActivity::class.java
+                        )
+                        activity2Intent.putExtra("LOCATION_ID", id.toString());
+                        startActivity(activity2Intent)
+                    }
+                    .setNeutralButton(
                         "Remove"
                     ) { _, _ ->
                         try {

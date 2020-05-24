@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.BoxLocationActivity
+import com.example.boxEvidence.activities.ItemActivity
 import com.example.boxEvidence.activities.table.main.ItemAdapter
 import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.database.AppDatabase
@@ -91,7 +92,7 @@ class BoxView : ListFragment() {
                         )
                     })
             }?.let { it1 ->
-                ItemAdapter(
+                BoxAdapter(
                     it,
                     it1
                 )
@@ -146,9 +147,9 @@ class BoxView : ListFragment() {
 
                         val activity2Intent = Intent(
                             this.context,
-                            BoxLocationActivity::class.java
+                            ItemActivity::class.java
                         )
-                        activity2Intent.putExtra("LOCATION_ID", id.toString());
+                        activity2Intent.putExtra("BOX_ID", id.toString());
                         startActivity(activity2Intent)
                     }.show()
             }

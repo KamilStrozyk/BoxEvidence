@@ -13,6 +13,12 @@ abstract class ItemDAO : GenericDAO<Item>() {
     @Query("SELECT * FROM items WHERE id = :entityId")
     abstract fun getById(entityId: Int) : Item
 
+    @Query("SELECT * FROM items WHERE boxid = :entityId")
+    abstract fun getByBoxId(entityId: Int) : Array<Item>
+
+    @Query("SELECT * FROM items WHERE eancode = :code")
+    abstract fun getByCode(code: String) : Array<Item>
+
     @Query("SELECT * FROM items WHERE categoryid = :categoryId")
     abstract fun getByCategory(categoryId: Int) : Array<Item>
 }

@@ -4,23 +4,16 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
-import androidx.navigation.fragment.findNavController
-import androidx.room.Delete
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.database.AppDatabase
@@ -28,11 +21,8 @@ import com.example.boxEvidence.database.model.Location
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
-import kotlinx.android.synthetic.main.activity_table.*
 import kotlinx.android.synthetic.main.activity_table.fab
-import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.android.synthetic.main.fragment_location_view.*
-import java.io.ByteArrayOutputStream
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -174,7 +164,7 @@ class LocationView : ListFragment() {
                 .show()
         }
 
-        val qr_btn: FloatingActionButton = this.qr
+        val qr_btn: FloatingActionButton = this.search
         qr_btn.setOnClickListener {
             val integrator = IntentIntegrator(this.activity)
             integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)

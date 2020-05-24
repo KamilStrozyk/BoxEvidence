@@ -20,6 +20,7 @@ import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.activities.table.main.ItemAdapter
+import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.viewmodel.ItemViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -154,7 +155,7 @@ class BoxView : ListFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            val refresh : Intent = Intent(this.context, BoxEdit::class.java)
+            val refresh : Intent = Intent(this.context, TableActivity::class.java)
             refresh.putExtra("LOCATION_ID", id.toString());
             startActivity(refresh)
             this.activity?.finish();

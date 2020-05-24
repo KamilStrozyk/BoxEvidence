@@ -33,15 +33,15 @@ class BoxEdit : AppCompatActivity() {
         val db = AppDatabase(this)
         val locationsToUse = db.locationDAO().getAllNames()
 
-        val spinner = this.findViewById<Spinner>(
+        var spinner = this.findViewById<Spinner>(
             R.id.box_location
         )
-        spinner.adapter = ArrayAdapter<String>(
+        val spinnerAdapter = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_dropdown_item,
             locationsToUse
         )
-
+        spinner.adapter = spinnerAdapter
         this.findViewById<Button>(R.id.box_qr).setOnClickListener {
             val integrator = IntentIntegrator(this)
             integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
@@ -61,63 +61,113 @@ class BoxEdit : AppCompatActivity() {
             }
 
         }
-        this.findViewById<Button>(R.id.box_add).setOnClickListener {
-            val error = AlertDialog.Builder(this)
-                .setMessage("Invalid data in form, please try again.")
-                .setPositiveButton("OK", null)
-            try {
-                val name = this.findViewById<EditText>(R.id.box_name).text.toString()
-                val comment = this.findViewById<EditText>(R.id.box_comment).text.toString()
 
-                if (name == "" || comment == "" || code == "") throw Exception()
-                Log.w("CODE", code)
-                var photoId: Int? = null
+        val boxId: Int = intent.getIntExtra("BOX_ID",-1)
+        Log.w("boxId",boxId.toString())
+        if (boxId == -1) {
+            this.findViewById<Button>(R.id.box_add).setOnClickListener {
+                val error = AlertDialog.Builder(this)
+                    .setMessage("Invalid data in form, please try again.")
+                    .setPositiveButton("OK", null)
+                try {
+                    val name = this.findViewById<EditText>(R.id.box_name).text.toString()
+                    val comment = this.findViewById<EditText>(R.id.box_comment).text.toString()
 
-                if(photo != null)
-                {
-                    photoId = db.photoDAO().getAllIds().max()?.plus(1)
-                    if(photoId == null) photoId = 0
-                    db.photoDAO().add(Photo(photoId,null, photo!!))
+                    if (name == "" || comment == "" || code == "") throw Exception()
+                    Log.w("CODE", code)
+                    var photoId: Int? = null
+
+                    if (photo != null) {
+                        photoId = db.photoDAO().getAllIds().max()?.plus(1)
+                        if (photoId == null) photoId = 0
+                        db.photoDAO().add(Photo(photoId, null, photo!!))
+                    }
+
+                    var boxId = db.boxDAO().getAll().map { value -> value.id }.max()?.plus(1)
+                    if (boxId == null) boxId = 0
+                    val locationId: Int =
+                        db.locationDAO().getIdByName(spinner.selectedItem.toString())
+                    val boxToAdd = Box(boxId, name, locationId, comment, code, photoId)
+                    db.boxDAO().add(boxToAdd)
+                    setResult(RESULT_OK, null);
+                    this.finish()
+                } catch (e: Exception) {
+                    error.show()
                 }
 
-                var boxId = db.boxDAO().getAll().map { value -> value.id }.max()?.plus(1)
-                if (boxId == null) boxId = 0
-                val locationId: Int = db.locationDAO().getIdByName(spinner.selectedItem.toString())
-                val boxToAdd = Box(boxId, name, locationId, comment, code, photoId)
-                db.boxDAO().add(boxToAdd)
-                setResult(RESULT_OK, null);
-                this.finish()
-            } catch (e: Exception) {
-                error.show()
-            }
-
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            if(resultCode == RESULT_OK) {
-                val bitmap =  data?.extras?.get("data") as Bitmap
-                val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                photo = stream.toByteArray()
-                this.findViewById<Button>(R.id.box_photo).setBackgroundColor(Color.GREEN)
             }
         } else {
+            var box = db.boxDAO().getById(boxId)
+            val boxLocation = db.locationDAO().getById(box.locationId)
+            this.findViewById<Button>(R.id.box_qr).text = "Change Code"
+            this.findViewById<Button>(R.id.box_photo).text = "Change Photo"
+            this.findViewById<EditText>(R.id.box_name).setText(box.name)
+            this.findViewById<EditText>(R.id.box_comment).setText(box.comment)
+            code = box.code
+            spinner.setSelection(spinnerAdapter.getPosition(boxLocation.name))
+            this.findViewById<Button>(R.id.box_add).text = "Update"
+            this.findViewById<Button>(R.id.box_add).setOnClickListener {
+                val error = AlertDialog.Builder(this)
+                    .setMessage("Invalid data in form, please try again.")
+                    .setPositiveButton("OK", null)
+                try {
+                    val name = this.findViewById<EditText>(R.id.box_name).text.toString()
+                    val comment = this.findViewById<EditText>(R.id.box_comment).text.toString()
 
-            val result: IntentResult =
-                IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if (result != null) {
-                if (result.getContents() != null) {
-                    code = result.getContents();
-                    this.findViewById<Button>(R.id.box_qr).setBackgroundColor(Color.GREEN)
+                    if (name == "" || comment == "" || code == "") throw Exception()
+                    Log.w("CODE", code)
+                    var photoId: Int? = null
+
+                    if (photo != null) {
+                        photoId = db.photoDAO().getAllIds().max()?.plus(1)
+                        if (photoId == null) photoId = 0
+                        db.photoDAO().add(Photo(photoId!!, null, photo!!))
+                        box.photoId = photoId
+                    }
+
+                    val locationId: Int =
+                        db.locationDAO().getIdByName(spinner.selectedItem.toString())
+                    box.name = name
+                    box.locationId = locationId
+                    box.code = code
+                    box.comment = comment
+
+                    db.boxDAO().updateElem(box)
+                    setResult(RESULT_OK, null);
+                    this.finish()
+                } catch (e: Exception) {
+                    error.show()
+                    Log.w("error", e.toString())
                 }
-            } else {
-                // This is important, otherwise the result will not be passed to the fragment
-                super.onActivityResult(requestCode, resultCode, data);
+
+
             }
         }
     }
 
-}
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                if (resultCode == RESULT_OK) {
+                    val bitmap = data?.extras?.get("data") as Bitmap
+                    val stream = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                    photo = stream.toByteArray()
+                    this.findViewById<Button>(R.id.box_photo).setBackgroundColor(Color.GREEN)
+                }
+            } else {
+
+                val result: IntentResult =
+                    IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                if (result != null) {
+                    if (result.getContents() != null) {
+                        code = result.getContents();
+                        this.findViewById<Button>(R.id.box_qr).setBackgroundColor(Color.GREEN)
+                    }
+                } else {
+                    // This is important, otherwise the result will not be passed to the fragment
+                    super.onActivityResult(requestCode, resultCode, data);
+                }
+            }
+        }
+
+    }

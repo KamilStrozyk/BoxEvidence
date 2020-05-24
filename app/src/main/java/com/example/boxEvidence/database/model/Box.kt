@@ -8,15 +8,15 @@ data class Box(
     @ColumnInfo(name = "id")
     val id: Int,
     @ColumnInfo(name = "name")
-    val name: String,
+    var name: String,
     @ColumnInfo(name = "locationid")
-    val locationId: Int,
+    var locationId: Int,
     @ColumnInfo(name = "comment")
-    val comment: String,
+    var comment: String,
     @ColumnInfo(name = "code")
-    val code: String,
+    var code: String,
     @ColumnInfo(name = "photoid")
-    val photoId: Int?
+    var photoId: Int?
 )
 
 data class BoxWithItems(

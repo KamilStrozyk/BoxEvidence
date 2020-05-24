@@ -3,6 +3,7 @@ package com.example.boxEvidence.activities.table.main.box
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Box
+import com.example.boxEvidence.database.model.Photo
 import kotlin.ByteArray
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
@@ -71,6 +73,13 @@ class BoxEdit : AppCompatActivity() {
                 Log.w("CODE", code)
                 var photoId: Int? = null
 
+                if(photo != null)
+                {
+                    photoId = db.photoDAO().getAllIds().max()?.plus(1)
+                    if(photoId == null) photoId = 0
+                    db.photoDAO().add(Photo(photoId,null, photo!!))
+                }
+
                 var boxId = db.boxDAO().getAll().map { value -> value.id }.max()?.plus(1)
                 if (boxId == null) boxId = 0
                 val locationId: Int = db.locationDAO().getIdByName(spinner.selectedItem.toString())
@@ -92,7 +101,7 @@ class BoxEdit : AppCompatActivity() {
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
                 photo = stream.toByteArray()
-
+                this.findViewById<Button>(R.id.box_photo).setBackgroundColor(Color.GREEN)
             }
         } else {
 
@@ -101,6 +110,7 @@ class BoxEdit : AppCompatActivity() {
             if (result != null) {
                 if (result.getContents() != null) {
                     code = result.getContents();
+                    this.findViewById<Button>(R.id.box_qr).setBackgroundColor(Color.GREEN)
                 }
             } else {
                 // This is important, otherwise the result will not be passed to the fragment

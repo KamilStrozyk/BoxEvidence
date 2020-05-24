@@ -8,6 +8,7 @@
     tools:context=".activities.table.main.TableActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -43,4 +44,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:visibility="invisible"
         app:srcCompat="@drawable/plus" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

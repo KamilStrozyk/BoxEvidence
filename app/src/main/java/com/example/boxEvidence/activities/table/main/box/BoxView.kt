@@ -1,6 +1,7 @@
 package com.example.boxEvidence.activities.table.main.box
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -50,19 +51,6 @@ class BoxView : ListFragment() {
 
     }
 
-//    fun newInstance(id: Int): BoxView? {
-//        val bundle = Bundle()
-//        bundle.putString("locationId", id.toString())
-//        val fragment = BoxView()
-//        fragment.setArguments(bundle)
-//        return fragment
-//    }
-//
-//    private fun readBundle(bundle: Bundle?) {
-//        if (bundle != null) {
-//            locationId = bundle.getString("locationId")?.toInt()!!
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -121,9 +109,9 @@ class BoxView : ListFragment() {
 
                         val activity2Intent = Intent(
                             this.context,
-                            BoxLocationActivity::class.java
+                            Box_details::class.java
                         )
-                        activity2Intent.putExtra("LOCATION_ID", id.toString());
+                        activity2Intent.putExtra("BOX_ID", id.toString());
                         startActivity(activity2Intent)
                     }
                     .setNeutralButton(
@@ -158,10 +146,20 @@ class BoxView : ListFragment() {
                 this.context,
                 BoxEdit::class.java
             )
-            startActivity(activity2Intent)
+            startActivityForResult(activity2Intent, 1);
         }
+
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            val refresh : Intent = Intent(this.context, BoxEdit::class.java)
+            refresh.putExtra("LOCATION_ID", id.toString());
+            startActivity(refresh)
+            this.activity?.finish();
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

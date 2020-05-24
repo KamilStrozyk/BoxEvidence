@@ -9,5 +9,7 @@ class Box_details : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_box_details)
+        val boxId = intent.getStringExtra("BOX_ID").toInt()
+
     }
 }

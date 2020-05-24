@@ -85,6 +85,7 @@ class BoxEdit : AppCompatActivity() {
                 val locationId: Int = db.locationDAO().getIdByName(spinner.selectedItem.toString())
                 val boxToAdd = Box(boxId, name, locationId, comment, code, photoId)
                 db.boxDAO().add(boxToAdd)
+                setResult(RESULT_OK, null);
                 this.finish()
             } catch (e: Exception) {
                 error.show()

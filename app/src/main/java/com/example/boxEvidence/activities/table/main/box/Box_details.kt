@@ -1,8 +1,14 @@
 package com.example.boxEvidence.activities.table.main.box
 
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import com.example.boxEvidence.R
+import com.example.boxEvidence.database.AppDatabase
+import kotlinx.android.synthetic.main.activity_box_edit.*
 
 class Box_details : AppCompatActivity() {
 
@@ -10,6 +16,22 @@ class Box_details : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_box_details)
         val boxId = intent.getStringExtra("BOX_ID").toInt()
+        val db = AppDatabase(this)
+        val box = db.boxDAO().getById(boxId)
 
+        if(box.photoId != null) {
+            val photoArray = db.photoDAO().getById(box.photoId).Data
+            this.findViewById<ImageView>(R.id.box_image).setImageBitmap(BitmapFactory.decodeByteArray(photoArray,0, photoArray.size))
+        }
+        this.findViewById<TextView>(R.id.box_name).text = box.name
+        this.findViewById<TextView>(R.id.box_location).text = db.locationDAO().getById(box.locationId).name
+        val commentArray = box.comment.chunked(40)
+        var comment : String = ""
+    commentArray.forEach { commentLine -> comment += commentLine + '\n' }
+        this.findViewById<TextView>(R.id.box_comment).text = comment
+
+            this.findViewById<Button>(R.id.box_edit_btn).setOnClickListener{
+
+        }
     }
 }

@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
                         TableActivity::class.java
                     )
                     startActivity(activity2Intent)
+                    this.finish()
                 }else{
                     configurationButton.setOnClickListener{
                         val activity2Intent = Intent(

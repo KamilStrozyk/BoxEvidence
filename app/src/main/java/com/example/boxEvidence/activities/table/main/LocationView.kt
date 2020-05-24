@@ -107,7 +107,7 @@ class LocationView : ListFragment() {
                         try {
                             val db = this.context?.let { it1 -> AppDatabase(it1) }
                             if (db != null) {
-                                if(!db.boxDAO().getByLocationId(id).isEmpty())
+                                if(db.boxDAO().getByLocationId(id).isEmpty())
                                 {
                                 db.locationDAO().remove(Location(id, item.toString()))
                                 adapter?.remove(item)

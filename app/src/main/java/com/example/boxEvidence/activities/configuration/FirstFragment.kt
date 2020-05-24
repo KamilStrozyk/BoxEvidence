@@ -41,8 +41,7 @@ class FirstFragment : Fragment() {
                 Thread {
                     val db = this.context?.let { it1 -> AppDatabase(it1) }
                     if (db != null) {
-                        val id = db.locationDAO().getAll().size
-                        db.locationDAO().add(Location(id, name.text.toString()))
+                        db.locationDAO().add(Location(0, name.text.toString()))
                     } else
                         throw Exception()
                     findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)

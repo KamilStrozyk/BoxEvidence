@@ -78,16 +78,13 @@ class BoxEdit : AppCompatActivity() {
                     var photoId: Int? = null
 
                     if (photo != null) {
-                        photoId = db.photoDAO().getAllIds().max()?.plus(1)
-                        if (photoId == null) photoId = 0
-                        db.photoDAO().add(Photo(photoId, null, photo!!))
+                        db.photoDAO().add(Photo(0, null, photo!!))
                     }
 
-                    var boxId = db.boxDAO().getAll().map { value -> value.id }.max()?.plus(1)
-                    if (boxId == null) boxId = 0
+
                     val locationId: Int =
                         db.locationDAO().getIdByName(spinner.selectedItem.toString())
-                    val boxToAdd = Box(boxId, name, locationId, comment, code, photoId)
+                    val boxToAdd = Box(0, name, locationId, comment, code, photoId)
                     db.boxDAO().add(boxToAdd)
                     setResult(RESULT_OK, null);
                     this.finish()

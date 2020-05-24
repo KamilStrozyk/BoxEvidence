@@ -107,11 +107,10 @@ class LocationView : ListFragment() {
                         try {
                             val db = this.context?.let { it1 -> AppDatabase(it1) }
                             if (db != null) {
-                                if(db.boxDAO().getByLocationId(id).isEmpty())
-                                {
-                                db.locationDAO().remove(Location(id, item.toString()))
-                                adapter?.remove(item)
-                                }else nullError.show()
+                                if (db.boxDAO().getByLocationId(id).isEmpty()) {
+                                    db.locationDAO().remove(Location(id, item.toString()))
+                                    adapter?.remove(item)
+                                } else nullError.show()
                             } else
                                 throw Exception()
 
@@ -146,13 +145,10 @@ class LocationView : ListFragment() {
 
                         val db = this.context?.let { it1 -> AppDatabase(it1) }
                         if (db != null) {
-                            var id = db.locationDAO().getAll().map{ value -> value.id }.max()
-                                ?.plus(1)
-                            id?.let { it1 -> Location(it1, locationName.toString()) }?.let { it2 ->
-                                db.locationDAO().add(
-                                    it2
-                                )
-                            }
+                            db.locationDAO().add(
+                                Location(0, locationName.toString())
+                            )
+
                             adapter?.add(locationName)
                         } else
                             throw Exception()

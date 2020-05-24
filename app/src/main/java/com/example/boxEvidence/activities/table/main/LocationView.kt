@@ -6,7 +6,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +70,7 @@ class LocationView : ListFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val db = this.context?.let { AppDatabase(it) }
 
         var locations = db?.locationDAO()?.getAll()
@@ -184,12 +187,20 @@ class LocationView : ListFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         val result: IntentResult =
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-            if (result.getContents() != null) {
-              val  code = result.getContents();
+            if (result.contents != null) {
+                val code = result.contents;
+                val db = this.context?.let { AppDatabase(it) }
+                if (db?.boxDAO()?.getByCode(code)?.isNotEmpty()!!) {
+                    val mp: MediaPlayer = MediaPlayer.create(this.context, R.raw.good);
+                    mp.start();
+                } else {
+                    val mp: MediaPlayer = MediaPlayer.create(this.context, R.raw.wrong);
+                    mp.start();
+                }
+
 
             }
         } else {
@@ -198,6 +209,7 @@ class LocationView : ListFragment() {
         }
 
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

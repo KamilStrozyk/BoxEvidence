@@ -11,10 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
@@ -146,12 +143,19 @@ class ItemView : ListFragment() {
             this.search.hide()
         } else {
             this.search.setOnClickListener {
+                val searchText = EditText(this.context)
+
+
+                searchText.hint =
+                    "Name or keyword"
+
                 val error = AlertDialog.Builder(this.context)
                     .setMessage("Error, please try again.")
                     .setPositiveButton("OK", null)
 
                 AlertDialog.Builder(this.context)
-                    .setMessage("Search").setPositiveButton("Search") { _: DialogInterface, _: Int ->
+                    .setMessage("Search").setView(searchText)
+                    .setPositiveButton("Search") { _: DialogInterface, _: Int ->
 
 
                     }
@@ -159,9 +163,9 @@ class ItemView : ListFragment() {
                         "Scan EAN"
                     ) { _, _ ->
 
-                    }.setNegativeButton("Cancel"){ _, _ ->
+                    }.setNegativeButton("Cancel") { _, _ ->
 
-                    } .show()
+                    }.show()
             }
         }
     }

@@ -2,7 +2,9 @@ package com.example.boxEvidence.activities.table.main.box
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -12,17 +14,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Box
+import kotlin.ByteArray
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import java.io.ByteArrayOutputStream
 
 
 class BoxEdit : AppCompatActivity() {
     var code: String = ""
+    var photo: ByteArray? = null
+    val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_box_edit)
-        var photo: ByteArray? = null
         val db = AppDatabase(this)
         val locationsToUse = db.locationDAO().getAllNames()
 
@@ -34,6 +39,7 @@ class BoxEdit : AppCompatActivity() {
             android.R.layout.simple_spinner_dropdown_item,
             locationsToUse
         )
+
         this.findViewById<Button>(R.id.box_qr).setOnClickListener {
             val integrator = IntentIntegrator(this)
             integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
@@ -44,6 +50,15 @@ class BoxEdit : AppCompatActivity() {
             integrator.initiateScan()
         }
 
+        this.findViewById<Button>(R.id.box_photo).setOnClickListener {
+
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+
+        }
         this.findViewById<Button>(R.id.box_add).setOnClickListener {
             val error = AlertDialog.Builder(this)
                 .setMessage("Invalid data in form, please try again.")
@@ -71,17 +86,27 @@ class BoxEdit : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result: IntentResult =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() != null) {
-                code = result.getContents();
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if(resultCode == RESULT_OK) {
+                val bitmap =  data?.extras?.get("data") as Bitmap
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                photo = stream.toByteArray()
+
             }
         } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            super.onActivityResult(requestCode, resultCode, data);
+
+            val result: IntentResult =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() != null) {
+                    code = result.getContents();
+                }
+            } else {
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
-
 
 }

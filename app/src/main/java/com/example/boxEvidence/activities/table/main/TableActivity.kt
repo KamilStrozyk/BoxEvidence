@@ -29,9 +29,6 @@ class TableActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
-
-
-
     }
     override fun onBackPressed() {
         val intent = Intent(Intent.ACTION_MAIN)

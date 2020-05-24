@@ -62,8 +62,8 @@ class BoxEdit : AppCompatActivity() {
 
         }
 
-        val boxId: Int = intent.getIntExtra("BOX_ID",-1)
-        Log.w("boxId",boxId.toString())
+        val boxId: Int = intent.getIntExtra("BOX_ID", -1)
+        Log.w("boxId", boxId.toString())
         if (boxId == -1) {
             this.findViewById<Button>(R.id.box_add).setOnClickListener {
                 val error = AlertDialog.Builder(this)
@@ -119,10 +119,14 @@ class BoxEdit : AppCompatActivity() {
                     var photoId: Int? = null
 
                     if (photo != null) {
-                        photoId = db.photoDAO().getAllIds().max()?.plus(1)
-                        if (photoId == null) photoId = 0
-                        db.photoDAO().add(Photo(photoId!!, null, photo!!))
-                        box.photoId = photoId
+                        db.photoDAO().add(Photo(0, null, photo!!))
+
+                        if (box.photoId != null) {
+                            db.photoDAO().remove(db.photoDAO().getById(box.photoId!!))
+                        }
+                        box.photoId = db.photoDAO().getAll().filter{value -> value.Data.contentEquals(
+                            photo!!
+                        ) }.single().id
                     }
 
                     val locationId: Int =
@@ -136,8 +140,8 @@ class BoxEdit : AppCompatActivity() {
                     setResult(RESULT_OK, null);
                     this.finish()
                 } catch (e: Exception) {
-                    error.show()
                     Log.w("error", e.toString())
+                    error.show()
                 }
 
 
@@ -145,29 +149,29 @@ class BoxEdit : AppCompatActivity() {
         }
     }
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                if (resultCode == RESULT_OK) {
-                    val bitmap = data?.extras?.get("data") as Bitmap
-                    val stream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                    photo = stream.toByteArray()
-                    this.findViewById<Button>(R.id.box_photo).setBackgroundColor(Color.GREEN)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                val bitmap = data?.extras?.get("data") as Bitmap
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                photo = stream.toByteArray()
+                this.findViewById<Button>(R.id.box_photo).setBackgroundColor(Color.GREEN)
+            }
+        } else {
+
+            val result: IntentResult =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() != null) {
+                    code = result.getContents();
+                    this.findViewById<Button>(R.id.box_qr).setBackgroundColor(Color.GREEN)
                 }
             } else {
-
-                val result: IntentResult =
-                    IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-                if (result != null) {
-                    if (result.getContents() != null) {
-                        code = result.getContents();
-                        this.findViewById<Button>(R.id.box_qr).setBackgroundColor(Color.GREEN)
-                    }
-                } else {
-                    // This is important, otherwise the result will not be passed to the fragment
-                    super.onActivityResult(requestCode, resultCode, data);
-                }
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
             }
         }
-
     }
+
+}

@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.boxEvidence.R
+import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -50,6 +51,13 @@ class TableActivity : AppCompatActivity() {
                 if (db?.boxDAO()?.getByCode(code)?.isNotEmpty()!!) {
                     val mp: MediaPlayer = MediaPlayer.create(this, R.raw.good);
                     mp.start();
+
+                    val activity2Intent = Intent(
+                        this,
+                        BoxLocationActivity::class.java
+                    )
+                    activity2Intent.putExtra("CODE", code);
+                    startActivity(activity2Intent)
                 } else {
                     val mp: MediaPlayer = MediaPlayer.create(this, R.raw.wrong);
                     mp.start();

@@ -132,9 +132,16 @@ class BoxView : ListFragment() {
                         try {
                             val db = this.context?.let { it1 -> AppDatabase(it1) }
                             if (db != null) {
-                                val toRemove = db.boxDAO().getById(id)
-                                db.boxDAO().remove(toRemove)
-                                adapter?.remove(wholeItem)
+                                if(db.itemDAO().getAll().any { value -> value.boxId == id })
+                                {
+                                    val nullError = AlertDialog.Builder(this.context)
+                                        .setMessage("Error, box is not empty.")
+                                        .setPositiveButton("OK", null).show()
+                                }else {
+                                    val toRemove = db.boxDAO().getById(id)
+                                    db.boxDAO().remove(toRemove)
+                                    adapter?.remove(wholeItem)
+                                }
                             } else
                                 throw Exception()
 

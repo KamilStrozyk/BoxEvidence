@@ -25,7 +25,7 @@ var boxId = -1
             this.findViewById<ImageView>(R.id.box_image).setImageBitmap(BitmapFactory.decodeByteArray(photoArray,0, photoArray.size))
         }
         this.findViewById<TextView>(R.id.item_name).text = box.name
-        this.findViewById<TextView>(R.id.item_boxes).text = db.locationDAO().getById(box.locationId).name
+        this.findViewById<TextView>(R.id.item_boxes).text = "Location:" + db.locationDAO().getById(box.locationId).name
         val commentArray = box.comment.chunked(40)
         var comment : String = ""
     commentArray.forEach { commentLine -> comment += commentLine + '\n' }

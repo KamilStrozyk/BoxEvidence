@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.boxEvidence.R
@@ -23,6 +24,11 @@ class ItemDetails : AppCompatActivity() {
         val db = AppDatabase(this)
         val item = db.itemDAO().getById(itemId)
 
+        var keywordZipped = ""
+        db.keywordItemDAO().getByItemId(itemId)
+            .map { value -> keywordZipped += db.keywordDAO().getById(value.keywordId)!!.name + ',' }
+
+        this.findViewById<TextView>(R.id.item_details_keywords).setText(keywordZipped)
 
         this.findViewById<TextView>(R.id.item_name).text = item.name
         this.findViewById<TextView>(R.id.item_boxes).text =

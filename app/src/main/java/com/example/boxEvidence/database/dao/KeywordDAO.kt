@@ -11,5 +11,8 @@ abstract class KeywordDAO : GenericDAO<Keyword>() {
     abstract fun getAll(): Array<Keyword>
 
     @Query("SELECT * FROM keywords WHERE id = :entityId")
-    abstract fun getById(entityId: Int) : Keyword
+    abstract fun getById(entityId: Int) : Keyword?
+
+    @Query("SELECT * FROM keywords WHERE name = :name")
+    abstract fun getByName(name: String) : Keyword?
 }

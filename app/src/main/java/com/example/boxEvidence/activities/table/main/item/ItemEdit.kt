@@ -17,6 +17,8 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
+import com.example.boxEvidence.database.model.ItemKeywordCrossRef
+import com.example.boxEvidence.database.model.Keyword
 import com.example.boxEvidence.database.model.Photo
 import kotlin.ByteArray
 import com.google.zxing.integration.android.IntentIntegrator
@@ -26,7 +28,7 @@ import java.io.ByteArrayOutputStream
 
 class ItemEdit : AppCompatActivity() {
     var code: String = ""
-    var photo: MutableCollection<ByteArray> ? = null
+    var photo: MutableCollection<ByteArray>? = null
     val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +94,15 @@ class ItemEdit : AppCompatActivity() {
                             db.photoDAO().add(photo!!.map { value -> Photo(0, newItemId, value) })
                         }
                     }
+                    keywords.forEach { keyword ->
+                        if (db.keywordDAO().getByName(keyword) == null) {
+                            db.keywordDAO().add(Keyword(0, keyword))
+                        }
+                        val keywordId = db.keywordDAO().getByName(keyword)!!.id
+                        db.keywordItemDAO().add(ItemKeywordCrossRef(newItemId, keywordId))
+
+                    }
+
                     setResult(RESULT_OK, null);
                     this.finish()
                 } catch (e: Exception) {
@@ -109,7 +120,7 @@ class ItemEdit : AppCompatActivity() {
 
             var keywordZipped = ""
             db.keywordItemDAO().getByItemId(itemId)
-                .map { value -> keywordZipped += db.keywordDAO().getById(value.keywordId).name + ',' }
+                .map { value -> keywordZipped += db.keywordDAO().getById(value.keywordId)!!.name + ',' }
 
             this.findViewById<EditText>(R.id.item_keywords).setText(keywordZipped)
             code = item.eanCode.toString()
@@ -124,6 +135,7 @@ class ItemEdit : AppCompatActivity() {
                     val comment = this.findViewById<EditText>(R.id.item_comment).text.toString()
                     val keywords =
                         this.findViewById<EditText>(R.id.item_keywords).text.toString().split(',')
+
 
                     if (name == "" || comment == "") throw Exception()
                     Log.w("CODE", code)
@@ -149,6 +161,17 @@ class ItemEdit : AppCompatActivity() {
                     item.comment = comment
 
                     db.itemDAO().updateElem(item)
+
+                    db.keywordItemDAO().remove(db.keywordItemDAO().getByItemId(itemId).toList())
+                    keywords.forEach { keyword ->
+
+                        if (db.keywordDAO().getByName(keyword) == null) {
+                            db.keywordDAO().add(Keyword(0, keyword))
+                        }
+                        val keywordId = db.keywordDAO().getByName(keyword)!!.id
+                        db.keywordItemDAO().add(ItemKeywordCrossRef(itemId, keywordId))
+                    }
+
                     setResult(RESULT_OK, null);
                     this.finish()
                 } catch (e: Exception) {

@@ -18,7 +18,7 @@ class ItemActivity : AppCompatActivity() {
         val boxIdStr = intent.getStringExtra("BOX_ID")
         var boxId = -1
         if (boxIdStr != null) boxId = boxIdStr.toInt()
-        var code = intent.getStringExtra("CODE")
+        var code = intent.getStringExtra("CODE")?.toString()
         if (code == null) code = "-1"
         Log.w("CODE",code)
         val fragment = ItemView.newInstance(boxId, code)

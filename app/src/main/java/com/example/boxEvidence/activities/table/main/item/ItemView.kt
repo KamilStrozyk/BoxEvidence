@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
+import com.example.boxEvidence.activities.ItemActivity
 import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.activities.table.main.item.ItemDetails
 import com.example.boxEvidence.database.AppDatabase
@@ -67,8 +68,18 @@ class ItemView : ListFragment() {
         val db = this.context?.let { AppDatabase(it) }
 
         var items: Array<Item>? = null
-        if (boxId != -1) items = db?.itemDAO()?.getByBoxId(boxId)
-        else if (code != null && code != "-1") items = db?.itemDAO()?.getByCode(code)
+        if (boxId > -1) items = db?.itemDAO()?.getByBoxId(boxId)
+        else if (code != null && code != "-1" && boxId != -2) items = db?.itemDAO()?.getByCode(code)
+        else if (boxId == -2) items = db?.itemDAO()!!.getAll()
+            .filter { item ->
+                item.name.contains(
+                    code,
+                    ignoreCase = true
+                ) || db.keywordItemDAO().getByItemId(item.id).filter { ki ->
+                    db.keywordDAO().getById(ki.keywordId)!!.name?.contains(code, ignoreCase = true)
+                }.isNotEmpty()
+            }
+            .toTypedArray()
         else items = db?.itemDAO()?.getAll()
 
         val adapter =
@@ -87,8 +98,21 @@ class ItemView : ListFragment() {
         list.adapter = adapter
 
         list.setOnItemClickListener { parent, view, position, id ->
-            if (boxId != -1) items = db?.itemDAO()?.getByBoxId(boxId)
-            else if (code != null && code != "-1") items = db?.itemDAO()?.getByCode(code)
+            if (boxId > -1) items = db?.itemDAO()?.getByBoxId(boxId)
+            else if (code != null && code != "-1" && boxId != -2) items = db?.itemDAO()?.getByCode(code)
+            else if (boxId == -2) items = db?.itemDAO()!!.getAll()
+                .filter { item ->
+                    item.name.contains(
+                        code,
+                        ignoreCase = true
+                    ) || db.keywordItemDAO().getByItemId(item.id).any { ki ->
+                        db.keywordDAO().getById(ki.keywordId)!!.name?.contains(
+                            code,
+                            ignoreCase = true
+                        )
+                    }
+                }
+                .toTypedArray()
             else items = db?.itemDAO()?.getAll()
 
             val wholeItem = adapter?.getItem(position)
@@ -139,7 +163,7 @@ class ItemView : ListFragment() {
             )
             startActivityForResult(activity2Intent, 1);
         }
-        if (boxId != -1) {
+        if (boxId > -1) {
             this.search.hide()
         } else {
             this.search.setOnClickListener {
@@ -156,8 +180,16 @@ class ItemView : ListFragment() {
                 AlertDialog.Builder(this.context)
                     .setMessage("Search").setView(searchText)
                     .setPositiveButton("Search") { _: DialogInterface, _: Int ->
+                        val activity2Intent: Intent
 
-
+                        activity2Intent = Intent(
+                            this.context,
+                            ItemActivity::class.java
+                        )
+                        activity2Intent.putExtra("CODE", searchText.text.toString());
+                        activity2Intent.putExtra("BOX_ID", (-2).toString());
+                        startActivity(activity2Intent)
+                        this.activity?.finish()
                     }
                     .setNeutralButton(
                         "Scan EAN"

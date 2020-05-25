@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream
 
 class ItemEdit : AppCompatActivity() {
     var code: String = ""
-    var photo: MutableCollection<ByteArray>? = null
+    var photo: MutableList<ByteArray> = mutableListOf<ByteArray>()
     val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,11 +89,14 @@ class ItemEdit : AppCompatActivity() {
                     db.itemDAO().add(itemToAdd)
                     val newItemId = db.itemDAO().getByValues(name, boxId, comment).id
 
-                    if (photo != null) {
-                        if (photo!!.size > 0) {
-                            db.photoDAO().add(photo!!.map { value -> Photo(0, newItemId, value) })
+                    if (photo!!.isNotEmpty()) {
+                        try {
+                            db.photoDAO()
+                                .add(photo!!.map { value -> Photo(0, newItemId, value) })
+                        } catch (exception: Exception) {
                         }
                     }
+
                     keywords.forEach { keyword ->
                         if (db.keywordDAO().getByName(keyword) == null) {
                             db.keywordDAO().add(Keyword(0, keyword))
@@ -117,7 +120,7 @@ class ItemEdit : AppCompatActivity() {
             this.findViewById<EditText>(R.id.item_name).setText(item.name)
             this.findViewById<EditText>(R.id.item_comment).setText(item.comment)
             this.findViewById<EditText>(R.id.item_comment).setText(item.comment)
-
+            photo.addAll(db.photoDAO().getByItemId(itemId).map(Photo::Data))
             var keywordZipped = ""
             db.keywordItemDAO().getByItemId(itemId)
                 .map { value -> keywordZipped += db.keywordDAO().getById(value.keywordId)!!.name + ',' }
@@ -140,8 +143,7 @@ class ItemEdit : AppCompatActivity() {
                     if (name == "" || comment == "") throw Exception()
                     Log.w("CODE", code)
 
-
-                    if (photo != null) {
+                    db.photoDAO().remove(db.photoDAO().getByItemId(itemId))
 
                         if (photo!!.isNotEmpty()) {
                             try {
@@ -151,7 +153,6 @@ class ItemEdit : AppCompatActivity() {
                             }
                         }
 
-                    }
 
                     val boxId: Int =
                         db.boxDAO().getIdByName(spinner.selectedItem.toString())
@@ -169,7 +170,9 @@ class ItemEdit : AppCompatActivity() {
                             db.keywordDAO().add(Keyword(0, keyword))
                         }
                         val keywordId = db.keywordDAO().getByName(keyword)!!.id
-                        db.keywordItemDAO().add(ItemKeywordCrossRef(itemId, keywordId))
+                        try {
+                            db.keywordItemDAO().add(ItemKeywordCrossRef(itemId, keywordId))
+                        }catch (e: Exception){}
                     }
 
                     setResult(RESULT_OK, null);
@@ -190,14 +193,11 @@ class ItemEdit : AppCompatActivity() {
                 val bitmap = data?.extras?.get("data") as Bitmap
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                if (photo != null)
-                    photo?.add(stream.toByteArray())
-                else {
 
-                    (photo as MutableList<ByteArray>).add(stream.toByteArray())
-
+                    photo.add(stream.toByteArray())
+//                    adapter.add(stream.toByteArray())
                 }
-            }
+
         } else {
 
             val result: IntentResult =

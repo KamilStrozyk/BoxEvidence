@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         Thread {
             val isConfigured = db.locationDAO().getAll().isNotEmpty()
-
             if (isConfigured) {
 //                    val look = db.locationDAO().getAll()
 //                    for( item in look){

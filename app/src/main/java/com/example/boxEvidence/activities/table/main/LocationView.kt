@@ -17,6 +17,7 @@ import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.database.AppDatabase
+import com.example.boxEvidence.database.model.Box
 import com.example.boxEvidence.database.model.Location
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.integration.android.IntentIntegrator
@@ -142,14 +143,14 @@ class LocationView : ListFragment() {
                         .setPositiveButton("OK", null)
 
                     try {
-                        if (locationName == "") throw Exception()
-
                         val db = this.context?.let { it1 -> AppDatabase(it1) }
                         if (db != null) {
+                        if (locationName == "" || db.locationDAO().getAllNames().contains(locationName)) throw Exception()
                             db.locationDAO().add(
                                 Location(0, locationName.toString())
                             )
-
+                            val locationId = db.locationDAO().getIdByName(locationName)
+                            db.boxDAO().add(Box(0, "$locationName: General space",locationId,"General space","none",null ))
                             adapter?.add(locationName)
                         } else
                             throw Exception()

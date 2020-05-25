@@ -115,48 +115,63 @@ class BoxView : ListFragment() {
                     .setMessage("Error, please try again.")
                     .setPositiveButton("OK", null)
 
+                if (item != null) {
+                    if(item.contains("General space")) {
+                        AlertDialog.Builder(this.context)
+                            .setMessage(item)
+                            .setNegativeButton("Cancel",null).setPositiveButton("Items") { _: DialogInterface, _: Int ->
 
-                AlertDialog.Builder(this.context)
-                    .setMessage(item).setPositiveButton("Details") { _: DialogInterface, _: Int ->
+                                val activity2Intent = Intent(
+                                    this.context,
+                                    ItemActivity::class.java
+                                )
+                                activity2Intent.putExtra("BOX_ID", id.toString());
+                                startActivity(activity2Intent)
+                            }.show()
+                    }else {
+                        AlertDialog.Builder(this.context)
+                            .setMessage(item)
+                            .setPositiveButton("Details") { _: DialogInterface, _: Int ->
 
-                        val activity2Intent = Intent(
-                            this.context,
-                            Box_details::class.java
-                        )
-                        activity2Intent.putExtra("BOX_ID", id.toString());
-                        startActivity(activity2Intent)
-                    }
-                    .setNeutralButton(
-                        "Remove"
-                    ) { _, _ ->
-                        try {
-                            val db = this.context?.let { it1 -> AppDatabase(it1) }
-                            if (db != null) {
-                                if(db.itemDAO().getAll().any { value -> value.boxId == id })
-                                {
-                                    val nullError = AlertDialog.Builder(this.context)
-                                        .setMessage("Error, box is not empty.")
-                                        .setPositiveButton("OK", null).show()
-                                }else {
-                                    val toRemove = db.boxDAO().getById(id)
-                                    db.boxDAO().remove(toRemove)
-                                    adapter?.remove(wholeItem)
+                                val activity2Intent = Intent(
+                                    this.context,
+                                    Box_details::class.java
+                                )
+                                activity2Intent.putExtra("BOX_ID", id.toString());
+                                startActivity(activity2Intent)
+                            }
+                            .setNeutralButton(
+                                "Remove"
+                            ) { _, _ ->
+                                try {
+                                    val db = this.context?.let { it1 -> AppDatabase(it1) }
+                                    if (db != null) {
+                                        if (db.itemDAO().getAll().any { value -> value.boxId == id }) {
+                                            val nullError = AlertDialog.Builder(this.context)
+                                                .setMessage("Error, box is not empty.")
+                                                .setPositiveButton("OK", null).show()
+                                        } else {
+                                            val toRemove = db.boxDAO().getById(id)
+                                            db.boxDAO().remove(toRemove)
+                                            adapter?.remove(wholeItem)
+                                        }
+                                    } else
+                                        throw Exception()
+
+                                } catch (exception: Exception) {
+                                    removeError.show()
                                 }
-                            } else
-                                throw Exception()
+                            }.setNegativeButton("Items") { _: DialogInterface, _: Int ->
 
-                        } catch (exception: Exception) {
-                            removeError.show()
-                        }
-                    }.setNegativeButton("Items") { _: DialogInterface, _: Int ->
-
-                        val activity2Intent = Intent(
-                            this.context,
-                            ItemActivity::class.java
-                        )
-                        activity2Intent.putExtra("BOX_ID", id.toString());
-                        startActivity(activity2Intent)
-                    }.show()
+                                val activity2Intent = Intent(
+                                    this.context,
+                                    ItemActivity::class.java
+                                )
+                                activity2Intent.putExtra("BOX_ID", id.toString());
+                                startActivity(activity2Intent)
+                            }.show()
+                    }
+                }
             }
         }
         val fab: FloatingActionButton = this.fab

@@ -74,6 +74,7 @@ class BoxEdit : AppCompatActivity() {
                     val comment = this.findViewById<EditText>(R.id.item_comment).text.toString()
 
                     if (name == "" || comment == "" || code == "") throw Exception()
+                    if(name.contains("General space",ignoreCase = true)) throw Exception()
                     Log.w("CODE", code)
                     var photoId: Int? = null
 

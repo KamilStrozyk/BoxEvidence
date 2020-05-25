@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.table.main.TableActivity
+import com.example.boxEvidence.activities.table.main.item.ItemDetails
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Item
 import com.example.boxEvidence.database.viewmodel.ItemViewModelWithBox

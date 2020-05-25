@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground2"
-    tools:context=".activities.table.main.box.Box_details">
+    tools:context=".activities.table.main.item.ItemDetails">
 
     <TextView
         android:id="@+id/item_comment"

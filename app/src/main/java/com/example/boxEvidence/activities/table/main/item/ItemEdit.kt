@@ -1,4 +1,7 @@
-package com.example.boxEvidence.activities.table.main.box
+package com.example.boxEvidence.activities.table.main.item
+
+import com.example.boxEvidence.database.model.Item
+
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -14,7 +17,6 @@ import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
-import com.example.boxEvidence.database.model.Box
 import com.example.boxEvidence.database.model.Photo
 import kotlin.ByteArray
 import com.google.zxing.integration.android.IntentIntegrator
@@ -22,16 +24,16 @@ import com.google.zxing.integration.android.IntentResult
 import java.io.ByteArrayOutputStream
 
 
-class BoxEdit : AppCompatActivity() {
+class ItemEdit : AppCompatActivity() {
     var code: String = ""
-    var photo: ByteArray? = null
+    var photo: MutableCollection<ByteArray> ? = null
     val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_box_edit)
+        setContentView(R.layout.activity_item_edit)
         val db = AppDatabase(this)
-        val locationsToUse = db.locationDAO().getAllNames()
+        val boxesToUse = db.boxDAO().getAllNames()
 
         var spinner = this.findViewById<Spinner>(
             R.id.item_boxes
@@ -39,7 +41,7 @@ class BoxEdit : AppCompatActivity() {
         val spinnerAdapter = ArrayAdapter<String>(
             this,
             android.R.layout.simple_spinner_dropdown_item,
-            locationsToUse
+            boxesToUse
         )
         spinner.adapter = spinnerAdapter
         this.findViewById<Button>(R.id.item_ean).setOnClickListener {
@@ -62,9 +64,9 @@ class BoxEdit : AppCompatActivity() {
 
         }
 
-        val boxId: Int = intent.getIntExtra("BOX_ID", -1)
-        Log.w("boxId", boxId.toString())
-        if (boxId == -1) {
+        val itemId: Int = intent.getIntExtra("ITEM_ID", -1)
+        Log.w("itemId", itemId.toString())
+        if (itemId == -1) {
             this.findViewById<Button>(R.id.item_add).setOnClickListener {
                 val error = AlertDialog.Builder(this)
                     .setMessage("Invalid data in form, please try again.")
@@ -72,36 +74,46 @@ class BoxEdit : AppCompatActivity() {
                 try {
                     val name = this.findViewById<EditText>(R.id.item_name).text.toString()
                     val comment = this.findViewById<EditText>(R.id.item_comment).text.toString()
+                    val keywords =
+                        this.findViewById<EditText>(R.id.item_keywords).text.toString().split(',')
 
-                    if (name == "" || comment == "" || code == "") throw Exception()
+                    if (name == "" || comment == "") throw Exception()
                     Log.w("CODE", code)
-                    var photoId: Int? = null
+
+
+                    val boxId: Int =
+                        db.boxDAO().getIdByName(spinner.selectedItem.toString())
+                    val itemToAdd = Item(0, name, code, 0, boxId, comment)
+                    db.itemDAO().add(itemToAdd)
+                    val newItemId = db.itemDAO().getByValues(name, boxId, comment).id
 
                     if (photo != null) {
-                        db.photoDAO().add(Photo(0, null, photo!!))
+                        if (photo!!.size > 0) {
+                            db.photoDAO().add(photo!!.map { value -> Photo(0, newItemId, value) })
+                        }
                     }
-
-
-                    val locationId: Int =
-                        db.locationDAO().getIdByName(spinner.selectedItem.toString())
-                    val boxToAdd = Box(0, name, locationId, comment, code, photoId)
-                    db.boxDAO().add(boxToAdd)
                     setResult(RESULT_OK, null);
                     this.finish()
                 } catch (e: Exception) {
                     error.show()
                 }
-
             }
+
         } else {
-            var box = db.boxDAO().getById(boxId)
-            val boxLocation = db.locationDAO().getById(box.locationId)
+            var item = db.itemDAO().getById(itemId)
+            val boxitem = item.boxId?.let { db.boxDAO().getById(it) }
             this.findViewById<Button>(R.id.item_ean).text = "Change Code"
-            this.findViewById<Button>(R.id.item_photo).text = "Change Photo"
-            this.findViewById<EditText>(R.id.item_name).setText(box.name)
-            this.findViewById<EditText>(R.id.item_comment).setText(box.comment)
-            code = box.code
-            spinner.setSelection(spinnerAdapter.getPosition(boxLocation.name))
+            this.findViewById<EditText>(R.id.item_name).setText(item.name)
+            this.findViewById<EditText>(R.id.item_comment).setText(item.comment)
+            this.findViewById<EditText>(R.id.item_comment).setText(item.comment)
+
+            var keywordZipped = ""
+            db.keywordItemDAO().getByItemId(itemId)
+                .map { value -> keywordZipped += db.keywordDAO().getById(value.keywordId).name + ',' }
+
+            this.findViewById<EditText>(R.id.item_keywords).setText(keywordZipped)
+            code = item.eanCode.toString()
+            spinner.setSelection(spinnerAdapter.getPosition(boxitem?.name))
             this.findViewById<Button>(R.id.item_add).text = "Update"
             this.findViewById<Button>(R.id.item_add).setOnClickListener {
                 val error = AlertDialog.Builder(this)
@@ -110,30 +122,33 @@ class BoxEdit : AppCompatActivity() {
                 try {
                     val name = this.findViewById<EditText>(R.id.item_name).text.toString()
                     val comment = this.findViewById<EditText>(R.id.item_comment).text.toString()
+                    val keywords =
+                        this.findViewById<EditText>(R.id.item_keywords).text.toString().split(',')
 
-                    if (name == "" || comment == "" || code == "") throw Exception()
+                    if (name == "" || comment == "") throw Exception()
                     Log.w("CODE", code)
-                    var photoId: Int? = null
+
 
                     if (photo != null) {
-                        db.photoDAO().add(Photo(0, null, photo!!))
 
-                        if (box.photoId != null) {
-                            db.photoDAO().remove(db.photoDAO().getById(box.photoId!!))
+                        if (photo!!.isNotEmpty()) {
+                            try {
+                                db.photoDAO()
+                                    .add(photo!!.map { value -> Photo(0, itemId, value) })
+                            } catch (exception: Exception) {
+                            }
                         }
-                        box.photoId = db.photoDAO().getAll().filter{value -> value.Data.contentEquals(
-                            photo!!
-                        ) }.single().id
+
                     }
 
-                    val locationId: Int =
-                        db.locationDAO().getIdByName(spinner.selectedItem.toString())
-                    box.name = name
-                    box.locationId = locationId
-                    box.code = code
-                    box.comment = comment
+                    val boxId: Int =
+                        db.boxDAO().getIdByName(spinner.selectedItem.toString())
+                    item.name = name
+                    item.boxId = boxId
+                    item.eanCode = code
+                    item.comment = comment
 
-                    db.boxDAO().updateElem(box)
+                    db.itemDAO().updateElem(item)
                     setResult(RESULT_OK, null);
                     this.finish()
                 } catch (e: Exception) {
@@ -152,8 +167,13 @@ class BoxEdit : AppCompatActivity() {
                 val bitmap = data?.extras?.get("data") as Bitmap
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
-                photo = stream.toByteArray()
-                this.findViewById<Button>(R.id.item_photo).setBackgroundColor(Color.GREEN)
+                if (photo != null)
+                    photo?.add(stream.toByteArray())
+                else {
+
+                    (photo as MutableList<ByteArray>).add(stream.toByteArray())
+
+                }
             }
         } else {
 

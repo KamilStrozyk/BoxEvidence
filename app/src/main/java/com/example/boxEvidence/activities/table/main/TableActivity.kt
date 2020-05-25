@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import kotlinx.android.synthetic.main.activity_table.*
+import java.lang.Exception
 
 
 class TableActivity : AppCompatActivity() {
@@ -42,33 +43,34 @@ class TableActivity : AppCompatActivity() {
         startActivity(intent)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result: IntentResult =
-            IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.contents != null) {
-                val code = result.contents;
-                val db = AppDatabase(this)
-                if (db?.boxDAO()?.getByCode(code)?.isNotEmpty()!!) {
-                    val mp: MediaPlayer = MediaPlayer.create(this, R.raw.good);
-                    mp.start();
+        try {
+            val result: IntentResult =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.contents != null) {
+                    val code = result.contents;
+                    val db = AppDatabase(this)
+                    if (db?.boxDAO()?.getByCode(code)?.isNotEmpty()!!) {
+                        val mp: MediaPlayer = MediaPlayer.create(this, R.raw.good);
+                        mp.start();
 
-                    val activity2Intent = Intent(
-                        this,
-                        BoxLocationActivity::class.java
-                    )
-                    activity2Intent.putExtra("CODE", code);
-                    startActivity(activity2Intent)
-                } else {
-                    val mp: MediaPlayer = MediaPlayer.create(this, R.raw.wrong);
-                    mp.start();
+                        val activity2Intent = Intent(
+                            this,
+                            BoxLocationActivity::class.java
+                        )
+                        activity2Intent.putExtra("CODE", code);
+                        startActivity(activity2Intent)
+                    } else {
+                        val mp: MediaPlayer = MediaPlayer.create(this, R.raw.wrong);
+                        mp.start();
+                    }
+
+
                 }
-
-
+            } else {
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
             }
-        } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
+        }catch (e : Exception) { super.onActivityResult(requestCode, resultCode, data);}
     }
 }

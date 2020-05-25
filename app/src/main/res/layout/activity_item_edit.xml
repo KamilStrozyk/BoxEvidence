@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground2"
-    tools:context=".activities.table.main.box.BoxEdit">
+    tools:context=".activities.table.main.item.ItemEdit">
 
 
     <EditText
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="96dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:inputType="textPersonName"
@@ -32,10 +32,35 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:text="Comment"
-        app:layout_constraintBottom_toTopOf="@+id/item_boxes"
+        app:layout_constraintBottom_toTopOf="@+id/item_keywords"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_name" />
+
+    <EditText
+        android:id="@+id/item_keywords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="keyword1,keyword2"
+        app:layout_constraintBottom_toTopOf="@+id/item_boxes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_comment" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_add"></ListView>
 
     <Button
         android:id="@+id/item_ean"
@@ -43,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Add QR Code"
+        android:text="Add EAN Code"
         app:layout_constraintBottom_toTopOf="@+id/item_add"
         app:layout_constraintEnd_toStartOf="@+id/item_photo"
         app:layout_constraintHorizontal_bias="0.5"
@@ -68,21 +93,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toTopOf="@+id/item_photo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_comment" />
+        app:layout_constraintTop_toBottomOf="@+id/item_keywords" />
 
     <Button
         android:id="@+id/item_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:text="Add Box"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="96dp"
+        android:text="Add Item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

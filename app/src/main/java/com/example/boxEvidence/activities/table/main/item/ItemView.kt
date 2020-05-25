@@ -1,4 +1,4 @@
-package com.example.boxEvidence.activities.table.main
+package com.example.boxEvidence.activities.table.main.item
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,7 +15,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
-import com.example.boxEvidence.activities.table.main.box.*
+import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Item
 import com.example.boxEvidence.database.viewmodel.ItemViewModelWithBox
@@ -69,19 +69,17 @@ class ItemView : ListFragment() {
         else if (code != null && code != "-1") items = db?.itemDAO()?.getByCode(code)
         else items = db?.itemDAO()?.getAll()
 
-        val adapter = ItemAdapter(this.context,
-            items?.map { value ->
-                value.boxId?.let { db?.boxDAO()?.getById(it)?.name }?.let {
-                    ItemViewModelWithBox(value.name,
-                        it,
-                        db?.photoDAO()?.getByItemId(value.id)?.get(0)?.Data?.size?.let {
-                            BitmapFactory.decodeByteArray(
-                                db?.photoDAO()?.getByItemId(value.id)?.get(0)?.Data, 0,
-                                it
-                            )
-                        })
-                }
-            })
+        val adapter =
+            ItemAdapter(this.context,
+                items?.map { value ->
+                    value.boxId?.let { db?.boxDAO()?.getById(it)?.name }?.let {
+                        ItemViewModelWithBox(
+                            value.name,
+                            it
+                        )
+                    }
+
+                })
 
         val list: ListView = listView
         list.adapter = adapter
@@ -106,9 +104,9 @@ class ItemView : ListFragment() {
 
                         val activity2Intent = Intent(
                             this.context,
-                            Box_details::class.java
+                            ItemDetails::class.java
                         )
-                        activity2Intent.putExtra("BOX_ID", id.toString());
+                        activity2Intent.putExtra("ITEM_ID", id.toString());
                         startActivity(activity2Intent)
                     }
                     .setNeutralButton(
@@ -135,7 +133,7 @@ class ItemView : ListFragment() {
         fab.setOnClickListener {
             val activity2Intent = Intent(
                 this.context,
-                BoxEdit::class.java
+                ItemEdit::class.java
             )
             startActivityForResult(activity2Intent, 1);
         }
@@ -219,11 +217,9 @@ class ItemAdapter(context: Context?, users: List<ItemViewModelWithBox?>?) :
         // Lookup view for data population
         val name = convertView!!.findViewById<View>(R.id.item_name) as TextView
         val box = convertView!!.findViewById<View>(R.id.item_box) as TextView
-        val image = convertView.findViewById<View>(R.id.item_image) as ImageView
         // Populate the data into the template view using the data object
         name.text = itemViewModel?.name
-        name.text = itemViewModel?.box
-        image.setImageBitmap(itemViewModel?.photo)
+        box.text = itemViewModel?.box
         // Return the completed view to render on screen
         return convertView
 

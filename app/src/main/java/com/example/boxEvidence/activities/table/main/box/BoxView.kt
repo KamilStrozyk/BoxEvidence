@@ -18,9 +18,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
-import com.example.boxEvidence.activities.BoxLocationActivity
 import com.example.boxEvidence.activities.ItemActivity
-import com.example.boxEvidence.activities.table.main.ItemAdapter
 import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Box
@@ -209,7 +207,7 @@ class BoxAdapter(context: Context?, users: List<ItemViewModel?>?) :
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView =
-                LayoutInflater.from(context).inflate(R.layout.item_item, parent, false)
+                LayoutInflater.from(context).inflate(R.layout.box_item, parent, false)
         }
         // Lookup view for data population
         val name = convertView!!.findViewById<View>(R.id.item_name) as TextView

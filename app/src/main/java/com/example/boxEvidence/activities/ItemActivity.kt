@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import androidx.appcompat.view.menu.MenuView
 import com.example.boxEvidence.R
-import com.example.boxEvidence.activities.table.main.ItemView
-import com.example.boxEvidence.activities.table.main.box.BoxView
+import com.example.boxEvidence.activities.table.main.item.ItemView
 
 class ItemActivity : AppCompatActivity() {
 

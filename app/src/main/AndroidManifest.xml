@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.ItemActivity"></activity>
+        <activity android:name=".activities.table.main.item.ItemDetails"></activity>
+        <activity android:name=".activities.table.main.item.ItemEdit" />
+        <activity android:name=".activities.ItemActivity" />
         <activity android:name=".activities.table.main.box.Box_details" />
         <activity android:name=".activities.table.main.box.BoxEdit" />
         <activity android:name=".activities.BoxLocationActivity" />

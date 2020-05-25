@@ -10,6 +10,9 @@ abstract class BoxDAO : GenericDAO<Box>() {
     @Query("SELECT * FROM boxes")
     abstract fun getAll(): Array<Box>
 
+    @Query("SELECT name FROM boxes")
+    abstract fun getAllNames(): Array<String>
+
     @Query("SELECT * FROM boxes WHERE id = :entityId")
     abstract fun getById(entityId: Int) : Box
 
@@ -18,4 +21,7 @@ abstract class BoxDAO : GenericDAO<Box>() {
 
     @Query("SELECT * FROM boxes WHERE code = :code")
     abstract fun getByCode(code: String) : Array<Box>
+
+    @Query("SELECT id FROM boxes WHERE name = :name")
+    abstract fun getIdByName(name: String) : Int
 }

@@ -8,7 +8,7 @@
     tools:context=".activities.table.main.box.Box_details">
 
     <TextView
-        android:id="@+id/box_comment"
+        android:id="@+id/item_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -16,26 +16,26 @@
         android:lines="5"
         android:text="@string/tab_text_1"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/box_location"
+        app:layout_constraintBottom_toTopOf="@+id/item_boxes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_name" />
+        app:layout_constraintTop_toBottomOf="@+id/item_name" />
 
     <TextView
-        android:id="@+id/box_name"
+        android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:text="TextView"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/box_comment"
+        app:layout_constraintBottom_toTopOf="@+id/item_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/box_image" />
 
     <TextView
-        android:id="@+id/box_location"
+        android:id="@+id/item_boxes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
@@ -45,7 +45,7 @@
         app:layout_constraintBottom_toTopOf="@+id/box_edit_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_comment" />
+        app:layout_constraintTop_toBottomOf="@+id/item_comment" />
 
     <ImageView
         android:id="@+id/box_image"
@@ -55,7 +55,7 @@
         android:minHeight="150dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/box_name"
+        app:layout_constraintBottom_toTopOf="@+id/item_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -71,5 +71,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/box_location" />
+        app:layout_constraintTop_toBottomOf="@+id/item_boxes" />
 </androidx.constraintlayout.widget.ConstraintLayout>

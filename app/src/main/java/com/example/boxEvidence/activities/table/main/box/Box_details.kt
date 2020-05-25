@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
-import kotlinx.android.synthetic.main.activity_box_edit.*
 
 class Box_details : AppCompatActivity() {
 var boxId = -1
@@ -25,12 +24,12 @@ var boxId = -1
             val photoArray = db.photoDAO().getById(box.photoId!!).Data
             this.findViewById<ImageView>(R.id.box_image).setImageBitmap(BitmapFactory.decodeByteArray(photoArray,0, photoArray.size))
         }
-        this.findViewById<TextView>(R.id.box_name).text = box.name
-        this.findViewById<TextView>(R.id.box_location).text = db.locationDAO().getById(box.locationId).name
+        this.findViewById<TextView>(R.id.item_name).text = box.name
+        this.findViewById<TextView>(R.id.item_boxes).text = db.locationDAO().getById(box.locationId).name
         val commentArray = box.comment.chunked(40)
         var comment : String = ""
     commentArray.forEach { commentLine -> comment += commentLine + '\n' }
-        this.findViewById<TextView>(R.id.box_comment).text = comment
+        this.findViewById<TextView>(R.id.item_comment).text = comment
 
             this.findViewById<Button>(R.id.box_edit_btn).setOnClickListener{
                 val activity2Intent = Intent(

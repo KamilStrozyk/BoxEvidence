@@ -21,6 +21,7 @@ import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Item
 import com.example.boxEvidence.database.viewmodel.ItemViewModelWithBox
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_table.fab
 import kotlinx.android.synthetic.main.fragment_item_view.*
 
@@ -161,7 +162,13 @@ class ItemView : ListFragment() {
                     .setNeutralButton(
                         "Scan EAN"
                     ) { _, _ ->
-
+                        val integrator = IntentIntegrator(this.activity)
+                        integrator.setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
+                        integrator.setPrompt("Scan")
+                        integrator.setCameraId(0)
+                        integrator.setBeepEnabled(true)
+                        integrator.setBarcodeImageEnabled(false)
+                        integrator.initiateScan()
                     }.setNegativeButton("Cancel") { _, _ ->
 
                     }.show()

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.BoxLocationActivity
+import com.example.boxEvidence.activities.ItemActivity
 import com.example.boxEvidence.database.AppDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -36,12 +37,14 @@ class TableActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         val fab: FloatingActionButton = findViewById(R.id.fab)
     }
+
     override fun onBackPressed() {
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_HOME)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         try {
             val result: IntentResult =
@@ -53,10 +56,22 @@ class TableActivity : AppCompatActivity() {
                     if (db?.boxDAO()?.getByCode(code)?.isNotEmpty()!!) {
                         val mp: MediaPlayer = MediaPlayer.create(this, R.raw.good);
                         mp.start();
+                        val activity2Intent: Intent
 
-                        val activity2Intent = Intent(
+                        activity2Intent = Intent(
                             this,
                             BoxLocationActivity::class.java
+                        )
+                        activity2Intent.putExtra("CODE", code);
+                        startActivity(activity2Intent)
+                    } else if (db?.itemDAO()?.getByCode(code)?.isNotEmpty()) {
+                        val mp: MediaPlayer = MediaPlayer.create(this, R.raw.good);
+                        mp.start();
+                        val activity2Intent: Intent
+
+                        activity2Intent = Intent(
+                            this,
+                            ItemActivity::class.java
                         )
                         activity2Intent.putExtra("CODE", code);
                         startActivity(activity2Intent)
@@ -71,6 +86,8 @@ class TableActivity : AppCompatActivity() {
                 // This is important, otherwise the result will not be passed to the fragment
                 super.onActivityResult(requestCode, resultCode, data);
             }
-        }catch (e : Exception) { super.onActivityResult(requestCode, resultCode, data);}
+        } catch (e: Exception) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

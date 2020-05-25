@@ -167,7 +167,7 @@ class LocationView : ListFragment() {
         val qr_btn: FloatingActionButton = this.search
         qr_btn.setOnClickListener {
             val integrator = IntentIntegrator(this.activity)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
             integrator.setPrompt("Scan")
             integrator.setCameraId(0)
             integrator.setBeepEnabled(true)

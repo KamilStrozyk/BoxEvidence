@@ -46,7 +46,7 @@ class ItemEdit : AppCompatActivity() {
         spinner.adapter = spinnerAdapter
         this.findViewById<Button>(R.id.item_ean).setOnClickListener {
             val integrator = IntentIntegrator(this)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
             integrator.setPrompt("Scan")
             integrator.setCameraId(0)
             integrator.setBeepEnabled(true)

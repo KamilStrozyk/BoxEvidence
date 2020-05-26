@@ -4,16 +4,14 @@ import com.example.boxEvidence.database.model.Item
 
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.boxEvidence.R
 import com.example.boxEvidence.database.AppDatabase
@@ -30,7 +28,7 @@ class ItemEdit : AppCompatActivity() {
     var code: String = ""
     var photo: MutableList<ByteArray> = mutableListOf<ByteArray>()
     val REQUEST_IMAGE_CAPTURE = 1
-
+    var adapter : PhotoAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_edit)
@@ -55,6 +53,8 @@ class ItemEdit : AppCompatActivity() {
             integrator.setBarcodeImageEnabled(false)
             integrator.initiateScan()
         }
+
+
 
         this.findViewById<Button>(R.id.item_photo).setOnClickListener {
 
@@ -185,6 +185,21 @@ class ItemEdit : AppCompatActivity() {
 
             }
         }
+
+         adapter =
+            PhotoAdapter(this,
+               photo)
+        val list: ListView = this.findViewById(R.id.list)
+        list.adapter = adapter
+        list.setOnItemClickListener { parent, view, position, id ->
+            val item = adapter?.getItem(position)
+            val error = AlertDialog.Builder(this)
+                .setMessage("Do you want to remove this photo?")
+                .setPositiveButton("OK"){ _: DialogInterface, i: Int ->
+                    adapter?.remove(item)
+                }.setNegativeButton("Cancel",null).show()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -194,8 +209,8 @@ class ItemEdit : AppCompatActivity() {
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
 
-                    photo.add(stream.toByteArray())
-//                    adapter.add(stream.toByteArray())
+//                    photo.add(stream.toByteArray())
+                    adapter?.add(stream.toByteArray())
                 }
 
         } else {

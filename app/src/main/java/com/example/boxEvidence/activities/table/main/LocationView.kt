@@ -1,17 +1,24 @@
 package com.example.boxEvidence.activities.table.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Environment
+import android.os.FileUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.ListFragment
 import com.example.boxEvidence.R
@@ -20,10 +27,14 @@ import com.example.boxEvidence.database.AppDatabase
 import com.example.boxEvidence.database.model.Box
 import com.example.boxEvidence.database.model.Location
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+
 import kotlinx.android.synthetic.main.activity_table.fab
 import kotlinx.android.synthetic.main.fragment_location_view.*
+import java.io.File
+import java.io.FileOutputStream
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -145,12 +156,24 @@ class LocationView : ListFragment() {
                     try {
                         val db = this.context?.let { it1 -> AppDatabase(it1) }
                         if (db != null) {
-                        if (locationName == "" || db.locationDAO().getAllNames().contains(locationName)) throw Exception()
+                            if (locationName == "" || db.locationDAO().getAllNames().contains(
+                                    locationName
+                                )
+                            ) throw Exception()
                             db.locationDAO().add(
                                 Location(0, locationName.toString())
                             )
                             val locationId = db.locationDAO().getIdByName(locationName)
-                            db.boxDAO().add(Box(0, "$locationName: General space",locationId,"General space","none",null ))
+                            db.boxDAO().add(
+                                Box(
+                                    0,
+                                    "$locationName: General space",
+                                    locationId,
+                                    "General space",
+                                    "none",
+                                    null
+                                )
+                            )
                             adapter?.add(locationName)
                         } else
                             throw Exception()
@@ -165,15 +188,21 @@ class LocationView : ListFragment() {
                 .show()
         }
 
-        val qr_btn: FloatingActionButton = this.search
-        qr_btn.setOnClickListener {
-            val integrator = IntentIntegrator(this.activity)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
-            integrator.setPrompt("Scan")
-            integrator.setCameraId(0)
-            integrator.setBeepEnabled(true)
-            integrator.setBarcodeImageEnabled(false)
-            integrator.initiateScan()
+        val backup: FloatingActionButton = this.backup
+        backup.setOnClickListener {
+            AlertDialog.Builder(this.context)
+                .setTitle("Do you want to make backup of your database?")
+                .setPositiveButton(
+                    "Yes"
+                ) { _, _ ->
+                    this.context?.let { it1 ->
+                        db?.exportDatabaseFile(it1)
+                    }
+
+                }.setNegativeButton(
+                    "Cancel"
+                ) { dialog, whichButton -> }
+                .show()
         }
     }
 
@@ -221,3 +250,5 @@ class LocationView : ListFragment() {
             }
     }
 }
+
+

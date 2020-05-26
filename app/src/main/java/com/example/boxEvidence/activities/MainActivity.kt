@@ -13,6 +13,7 @@ import com.example.boxEvidence.R
 import com.example.boxEvidence.activities.configuration.AddLocation
 import com.example.boxEvidence.activities.table.main.TableActivity
 import com.example.boxEvidence.database.AppDatabase
+import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -21,13 +22,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
-            PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_DENIED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
         ) {
             ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.CAMERA),
-                50
-            ); }
+                this,
+                arrayOf(
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                IntentIntegrator.REQUEST_CODE
+            );
+        }
         val db = AppDatabase(applicationContext)
 
         Thread {
@@ -64,7 +78,6 @@ class MainActivity : AppCompatActivity() {
 //        val inflater = menuInflater
 //        inflater.inflate(R.layout.qr_menu, menu)
 //    }
-
 }
 
 

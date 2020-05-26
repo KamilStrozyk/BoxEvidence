@@ -1,13 +1,11 @@
 package com.example.boxEvidence.activities.configuration
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.annotation.UiThread
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.boxEvidence.R
@@ -34,6 +32,16 @@ class FirstFragment : Fragment() {
         val error = AlertDialog.Builder(this.context)
             .setMessage("Invalid data in form, please try again.")
             .setPositiveButton("OK", null)
+
+        view.findViewById<Button>(R.id.button_import).setOnClickListener {
+            AlertDialog.Builder(this.context)
+                .setMessage("Insert your 3 db files in your download folder")
+                .setPositiveButton("OK") { _,_->
+                    this.context?.let { it1 ->
+                        context?.let { it1 -> AppDatabase(it1) }?.importDatabaseFile(it1)
+                    }
+                }.setNegativeButton("Cancel",null).show()
+        }
 
         view.findViewById<Button>(R.id.button_next).setOnClickListener {
             try {
